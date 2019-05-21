@@ -112,4 +112,34 @@ open class StylizedTextField: UITextField, UITextFieldDelegate {
     open func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
         return true
     }
+    
+    open override func canPerformAction(_ action: Selector, withSender sender: Any?) -> Bool {
+        if #available(iOS 10, *) {
+            if action == #selector(UIResponderStandardEditActions.paste(_:)) {
+                return true
+            }
+        } else {
+            if action != #selector(paste(_:)) {
+                return true
+            }
+        }
+        
+        return false
+    }
+    
+    open override func target(forAction action: Selector, withSender sender: Any?) -> Any? {
+        
+        if #available(iOS 10, *) {
+            if action != #selector(UIResponderStandardEditActions.paste(_:)) {
+                return nil
+            }
+        } else {
+            if action != #selector(paste(_:)) {
+                return nil
+            }
+        }
+    
+        return super.target(forAction: action, withSender: sender)
+    }
+
 }
